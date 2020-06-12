@@ -1,0 +1,17 @@
+name: ccSoundScape
+main: net.clownercraft.ccsound.ccSoundScape
+author: TheClowner
+version: ${project.version}
+api-version: 1.15
+depend: [MidiPlayer]
+commands:
+  ccsound:
+    description: Command for adding/removing sounds
+    permission: ccsound.admin
+    permission-message: You do not have access to that command.
+    usage: /ccsound <add|remove> <midifile>
+  togglemusic:
+    description: Toggle whether you hear SoundScape music.
+    default: true
+    usage: /togglemusic
+    aliases: [musicoff,moff]
