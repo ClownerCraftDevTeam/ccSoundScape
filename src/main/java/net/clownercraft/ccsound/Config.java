@@ -1,5 +1,7 @@
 package net.clownercraft.ccsound;
 
+import lombok.Getter;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,53 +11,102 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+@Getter
 public class Config {
-    public HashMap<String,Location> SONGS = new HashMap(); //Midi filename, Location
+    final HashMap<String,TrackPlayer> locations = new HashMap<>();
+    static final int confVersion = 2;
 
+    int playerRangeX = 40, playerRangeY = 40, playerRangeZ = 40;
+    int distanceCheckDelay = 60;
 
-    public Config() {
+    String musicToggleOn = "&5[Music turned back on.]";
+    String musicToggleOff = "&5[Music turned off.]";
+    String commandPrefix = "&b&lccSoundscape &b» ";
+    String commandPlayerOnly = "&cThis command can only be used by players.";
+
+    ccSoundScape plugin;
+
+    public Config(ccSoundScape plugin) {
+        this.plugin = plugin;
+
         YamlConfiguration conf;
-        File configFile = new File(ccSoundScape.getInstance().getDataFolder(),"config.yml");
-        if (!configFile.exists()) ccSoundScape.getInstance().saveDefaultConfig();
+        File configFile = new File(plugin.getDataFolder(),"config.yml");
+        if (!configFile.exists()) plugin.saveDefaultConfig();
 
         conf = YamlConfiguration.loadConfiguration(configFile);
 
-        ConfigurationSection sec = conf.getConfigurationSection("songs");
+        //Settings
+        playerRangeX = conf.getInt("Settings.PlayerRange.X",playerRangeX);
+        playerRangeY = conf.getInt("Settings.PlayerRange.Y",playerRangeY);
+        playerRangeZ = conf.getInt("Settings.PlayerRange.Z",playerRangeZ);
+        distanceCheckDelay = conf.getInt("Settings.DistanceCheckDelay",distanceCheckDelay);
 
-        Set<String> keys = sec.getKeys(false);
+        //Playlists
+        ConfigurationSection section = conf.getConfigurationSection("Playlists");
+        if (section!=null) {
+            for (String key:section.getKeys(false)) {
+                TrackPlayer trackPlayer = new TrackPlayer(plugin,key,Objects.requireNonNull(section.getConfigurationSection(key)));
+                locations.put(key,trackPlayer);
+            }
+        }
 
-        Iterator keyIterator = keys.iterator();
+        //messages section
+        musicToggleOn = conf.getString("Messages.musicToggleOn",musicToggleOn);
+        musicToggleOff = conf.getString("Messages.musicToggleOff",musicToggleOff);
+        commandPrefix = conf.getString("Messages.commandPrefix",commandPrefix);
+        commandPlayerOnly = conf.getString("Messages.commandPlayerOnly",commandPlayerOnly);
 
-        while (keyIterator.hasNext()) {
-            String key = (String) keyIterator.next();
-            Location loc = (Location) sec.get(key+".loc");
-            SONGS.put(key.replace('_','.'),loc);
+        if (conf.getInt("confVersion",0)<confVersion) {
+            //Update old config files with new settings
+            save();
         }
     }
-
 
     public void save() {
         FileConfiguration conf = new YamlConfiguration();
 
-        conf.createSection("songs");
+        conf.set("confVersion",confVersion);
 
-        Set<String> keys = SONGS.keySet();
-        Iterator keyIterator = keys.iterator();
+        //Settings
+        conf.set("Settings.PlayerRange.X",playerRangeX);
+        conf.set("Settings.PlayerRange.Y",playerRangeY);
+        conf.set("Settings.PlayerRange.Z",playerRangeZ);
+        conf.set("Settings.DistanceCheckDelay",distanceCheckDelay);
 
-        while (keyIterator.hasNext()) {
-            String key = (String) keyIterator.next();
-            Location loc = SONGS.get(key);
-            key = key.replace('.','_');
-
-            conf.createSection("songs."+key+".loc");
-            conf.set("songs."+key+".loc",loc);
+        //Playlists
+        ConfigurationSection section = conf.createSection("Playlists");
+        for (String key : locations.keySet()) {
+            section.set(key,locations.get(key).getConfig());
         }
 
+        //messages section
+        conf.set("Messages.musicToggleOn",musicToggleOn);
+        conf.set("Messages.musicToggleOff",musicToggleOff);
+        conf.set("Messages.commandPrefix",commandPrefix);
+        conf.set("Messages.commandPlayerOnly",commandPlayerOnly);
+
         try {
-            conf.save(new File(ccSoundScape.getInstance().getDataFolder(),"config.yml"));
+            conf.save(new File(plugin.getDataFolder(),"config.yml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public void reload() {
+        //TODO
+    }
+
+    public String getMessage(String key) {
+        String out = "";
+        switch (key) {
+            case "musicToggleOn": out = commandPrefix + musicToggleOn; break;
+            case "musicToggleOff": out = commandPrefix + musicToggleOff; break;
+            case "commandPlayerOnly": out = commandPrefix + commandPlayerOnly; break;
+        }
+        return formatMessage(out);
+    }
+
+    public String formatMessage(String msg) {
+        return ChatColor.translateAlternateColorCodes('&',msg);
     }
 }

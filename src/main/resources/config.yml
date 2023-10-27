@@ -1,3 +1,28 @@
-songs:
-  example.mid:
-    loc: null
+# Used to update configs - please don't change
+confVersion: 2
+
+# Plugin Settings
+Settings:
+  PlayerRange:
+    # How far from the location players can be to be sent the notes.
+    # NB: Does not override vanilla volume mechanics
+    X: 40
+    Y: 40
+    Z: 40
+  # How long between checking for players in range, in ticks
+  DistanceCheckDelay: 60
+
+# Configured Playlists - use /ccsound command to setup location ingame
+Playlists:
+  Example:
+    Location: null
+    Tracks:
+      - Track1.mid
+      - Track2.mid
+
+# Customisable messages
+Messages:
+  commandPrefix: "&b&lccSoundscape &b» "
+  commandPlayerOnly: "&cThis command can only be used by players."
+  musicToggleOn: "&5[Music turned back on.]"
+  musicToggleOff: "&5[Music turned off.]"

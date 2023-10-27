@@ -2,7 +2,7 @@ name: ccSoundScape
 main: net.clownercraft.ccsound.ccSoundScape
 author: TheClowner
 version: ${project.version}
-api-version: 1.15
+api-version: 1.13
 depend: [MidiPlayer]
 commands:
   ccsound:
@@ -14,4 +14,4 @@ commands:
     description: Toggle whether you hear SoundScape music.
     default: true
     usage: /togglemusic
-    aliases: [musicoff,moff]
+    aliases: [musicoff,moff,musictoggle]
