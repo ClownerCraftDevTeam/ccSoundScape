@@ -18,6 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 
 @Getter
 public class TrackPlayer {
@@ -38,6 +39,8 @@ public class TrackPlayer {
         this.location = l;
         this.name = name;
         this.trackNames = new ArrayList<>();
+        this.notes = new HashMap<>();
+        this.tracks = new HashMap<>();
     }
 
     public TrackPlayer(ccSoundScape plugin, String name, ConfigurationSection config) {
@@ -45,6 +48,8 @@ public class TrackPlayer {
         this.name = name;
         this.location = config.getLocation("location");
         this.trackNames = (ArrayList<String>) config.getStringList("tracks");
+        this.notes = new HashMap<>();
+        this.tracks = new HashMap<>();
         reloadTracks();
     }
 
@@ -106,9 +111,11 @@ public class TrackPlayer {
         }
 
         //remove players that are now not in range
-        for (Player current : playersInRange) {
+        Iterator<Player> iterator = playersInRange.iterator();
+        while (iterator.hasNext()) {
+            Player current = iterator.next();
             if (!newPlayers.contains(current)) {
-                playersInRange.remove(current);
+                iterator.remove();
                 for (LocationTrack track:tracks.values()) track.removePlayer(current);
             }
         }
@@ -137,6 +144,7 @@ public class TrackPlayer {
     }
 
     public void stopPlayer() {
+        if (tracks.size()==0) return;
         plugin.getPlayer().removeTrack(tracks.get(trackNames.get(currentTrack)));
         if (nextTrackStarter!=null && !nextTrackStarter.isCancelled()) nextTrackStarter.cancel();
     }
