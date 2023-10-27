@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("NullableProblems")
 @AllArgsConstructor
 public class ToggleCommand implements CommandExecutor {
     ccSoundScape plugin;

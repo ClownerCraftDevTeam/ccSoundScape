@@ -4,20 +4,15 @@ import lombok.Getter;
 import net.clownercraft.ccsound.command.SoundCommand;
 import net.clownercraft.ccsound.command.ToggleCommand;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.primesoft.midiplayer.MidiPlayerMain;
 import org.primesoft.midiplayer.MusicPlayer;
-import org.primesoft.midiplayer.midiparser.MidiParser;
-import org.primesoft.midiplayer.midiparser.NoteTrack;
 import org.primesoft.midiplayer.track.LocationTrack;
 
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 @Getter
 public class ccSoundScape extends JavaPlugin {
@@ -34,8 +29,8 @@ public class ccSoundScape extends JavaPlugin {
         this.getLogger().info("Loaded Config");
 
         //register commands
-        this.getCommand("ccsound").setExecutor(new SoundCommand(this));
-        this.getCommand("togglemusic").setExecutor(new ToggleCommand(this));
+        Objects.requireNonNull(this.getCommand("ccsound")).setExecutor(new SoundCommand(this));
+        Objects.requireNonNull(this.getCommand("togglemusic")).setExecutor(new ToggleCommand(this));
 
         //Start music
         player = MidiPlayerMain.getInstance().getMusicPlayer();
@@ -52,11 +47,6 @@ public class ccSoundScape extends JavaPlugin {
     @Override
     public void onDisable() {
         stopPlayers();
-    }
-
-    public void resetPlayers() {
-        stopPlayers();
-        startPlayers();
     }
 
     public void stopPlayers() {
@@ -88,6 +78,8 @@ public class ccSoundScape extends JavaPlugin {
     }
 
     public void reload() {
-        //TODO
+        stopPlayers();
+        this.getConf().loadSettings();
+        startPlayers();
     }
 }

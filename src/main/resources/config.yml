@@ -26,3 +26,20 @@ Messages:
   commandPlayerOnly: "&cThis command can only be used by players."
   musicToggleOn: "&5[Music turned back on.]"
   musicToggleOff: "&5[Music turned off.]"
+  commandNoPerms: "&cYou do not have permission for that."
+  commandReload: "&9Plugin reloaded"
+  commandNotEnoughArgs: "&cNot enough arguments - see &7/ccsound help"
+  commandNameTaken: "&cA location by that name already exists!"
+  commandLocationAdded: "&9Added location"
+  commandLocationNotExist: "&cThat location does not exist"
+  commandLocationRemoved: "&9Location removed"
+  commandTrackAdded: "&9Track added"
+  commandTrackNotExist: "&cThat location has no track by that name"
+  commandTrackRemoved: "&9Track removed"
+  commandHelp: "&b&lccSoundScape &b» &9&lHelp:\n
+                &7/ccsound reload &9Reload the plugin\n
+                &7/ccsound addLocation &8<&7name&8> &9Add a new music player at your current location\n
+                &7/ccsound removeLocation &8<&7name&8> &9Remove a music player\n
+                &7/ccsound addTrack &8<&7LocationName&8> &8<&7MidiFileName&8>\n
+                &7/ccsound removeTrack  &8<&7LocationName&8> &8<&7MidiFileName&8>\n
+                &9  Add/remove a track from a location. File name should include .mid\n"
